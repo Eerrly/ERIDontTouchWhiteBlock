@@ -12,6 +12,8 @@ public class GameView : View
     Text timeTxt;
     Text scoreTxt;
     VerticalLayoutGroup layoutGroup;
+    Button passBtn;
+    Button playBtn;
 
     float topY;
     float height;
@@ -46,6 +48,14 @@ public class GameView : View
 
         timeTxt = viewGo.transform.Find("Text_Time").GetComponent<Text>();
         scoreTxt = viewGo.transform.Find("Text_Score").GetComponent<Text>();
+
+        passBtn = viewGo.transform.Find("Button_Pass").GetComponent<Button>();
+        playBtn = viewGo.transform.Find("Button_Play").GetComponent<Button>();
+        passBtn.gameObject.SetActive(true);
+        playBtn.gameObject.SetActive(false);
+        passBtn.onClick.AddListener(OnPassButtonClicked);
+        playBtn.onClick.AddListener(OnPlayButtonClicked);
+
         layoutGroup = viewGo.transform.Find("BlockScrollView/BlockScrollViewPort").GetComponent<VerticalLayoutGroup>();
         layoutGroup.enabled = true;
 
@@ -118,6 +128,22 @@ public class GameView : View
             block.SetImageColor(Color.red);
             ViewManager.Instance.ChangeView((int)EView.GameOver);
         }
+    }
+
+    private void OnPassButtonClicked()
+    {
+        Global.Instance.timeScale = 0;
+        passBtn.gameObject.SetActive(false);
+        playBtn.gameObject.SetActive(true);
+        AudioManager.Instance.PauseAudio();
+    }
+
+    private void OnPlayButtonClicked()
+    {
+        Global.Instance.timeScale = 1;
+        passBtn.gameObject.SetActive(true);
+        playBtn.gameObject.SetActive(false);
+        AudioManager.Instance.UnPauseAudio();
     }
 
     public override void OnExit()

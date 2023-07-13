@@ -92,7 +92,7 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
         GameObject viewGo;
         if(!cacheViewDic.TryGetValue(viewId, out viewGo))
         {
-            viewGo = GameObject.Instantiate(Resources.Load<GameObject>($"{System.Enum.GetName(typeof(EView), viewId)}View"));
+            viewGo = GameObject.Instantiate(Resources.Load<GameObject>($"Prefabs/{System.Enum.GetName(typeof(EView), viewId)}View"));
             cacheViewDic.Add(viewId, viewGo);
         }
         return viewGo;

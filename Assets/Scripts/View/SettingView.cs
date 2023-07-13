@@ -21,6 +21,8 @@ public class SettingView : View
         closeBtn = viewGo.transform.Find("Button_Close").GetComponent<Button>();
         audioVolSlider = viewGo.transform.Find("Slider_AudioVol").GetComponent<Slider>();
         audioToggle = viewGo.transform.Find("Toggle_Audio").GetComponent<Toggle>();
+        audioVolSlider.value = AudioManager.Instance.Volume;
+
         closeBtn.onClick.AddListener(OnCloseButtonClicked);
         audioVolSlider.onValueChanged.AddListener(OnAudioVolSliderValueChanged);
         audioToggle.onValueChanged.AddListener(OnAudioToggleValueChanged);
@@ -35,11 +37,20 @@ public class SettingView : View
     private void OnAudioVolSliderValueChanged(float value)
     {
         Debug.Log($"SettingView OnAudioVolSliderValueChanged! value:{value}");
+        AudioManager.Instance.Volume = value;
     }
 
     private void OnAudioToggleValueChanged(bool isOn)
     {
         Debug.Log($"SettingView OnAudioToggleValueChanged! isOn:{isOn}");
+        if(isOn)
+        {
+            AudioManager.Instance.PlayAudio();
+        }
+        else
+        {
+            AudioManager.Instance.StopAudio();
+        }
     }
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
