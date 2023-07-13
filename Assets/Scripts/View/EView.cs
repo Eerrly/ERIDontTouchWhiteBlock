@@ -4,13 +4,11 @@
 
     Launcher = 1,
 
-    Loading = 2,
+    Setting = 2,
 
-    Setting = 3,
+    Game = 3,
 
-    GameMain = 4,
+    GameOver = 4,
 
-    GameOver = 5,
-
-    Count = 6,
+    Count = 5,
 }

@@ -53,25 +53,25 @@
 
     public override void Update(float deltaTime, float unscaleDeltaTime)
     {
-        var curState = _viewDic[ViewManager.Instance.currViewId];
-        curState.OnUpdate(deltaTime, unscaleDeltaTime);
+        var currView = _viewDic[ViewManager.Instance.currViewId];
+        currView.OnUpdate(deltaTime, unscaleDeltaTime);
     }
 
     public bool DoChangeView()
     {
-        var nextId = ViewManager.Instance.nextViewId;
-        var nextState = _viewDic[nextId] as View;
-        if (nextId != 0 && nextState != null && nextState.TryEnter())
+        var nextViewId = ViewManager.Instance.nextViewId;
+        var nextView = _viewDic[nextViewId] as View;
+        if (nextViewId != 0 && nextView != null && nextView.TryEnter())
         {
-            var currId = ViewManager.Instance.currViewId;
-            var currState = _viewDic[currId] as View;
-            if (currId != 0 && currState != null && currState.TryExit())
+            var currViewId = ViewManager.Instance.currViewId;
+            var currView = _viewDic[currViewId] as View;
+            if (currViewId != 0 && currView != null && currView.TryExit())
             {
-                currState.OnExit();
+                currView.OnExit();
             }
             ViewManager.Instance.nextViewId = (int)EView.None;
-            nextState.Reset();
-            nextState.OnEnter();
+            nextView.Reset();
+            nextView.OnEnter();
             if (ViewManager.Instance.nextViewId != (int)EView.None)
             {
                 return DoChangeView();

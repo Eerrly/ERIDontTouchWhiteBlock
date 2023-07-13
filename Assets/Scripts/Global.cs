@@ -8,15 +8,17 @@ public class Global : MonoBehaviour
 
     public static Global Instance => instance;
 
+    public float timeScale = 1;
+
     private void Awake()
     {
         instance = this;
     }
 
-
     void Start()
     {
         ViewManager.Instance.OnInitialize();
+        BlockScrollManager.Instance.OnInitialize();
     }
 
 }

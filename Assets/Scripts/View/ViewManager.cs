@@ -27,13 +27,13 @@ public class ViewManager : MonoBehaviour, IManager
     }
 
     private Camera _camera;
-    public Camera UICamera => _camera;
+    public Camera ViewCamera => _camera;
 
     private Camera _noneCamera;
     public Camera NoneCamera => _noneCamera;
 
 
-    private Dictionary<int, View> _windows = new Dictionary<int, View>();
+    public Dictionary<int, GameObject> cacheViewDic = new Dictionary<int, GameObject>();
 
     public void OnInitialize()
     {
@@ -49,7 +49,7 @@ public class ViewManager : MonoBehaviour, IManager
         _camera = go.AddComponent<Camera>();
         _camera.backgroundColor = new Color(0, 0, 0, 0);
         _camera.clearFlags = CameraClearFlags.Depth;
-        _camera.cullingMask = 1 << Setting.LAYER_UI;
+        _camera.cullingMask = 1 << Setting.LAYER_VIEW;
         _camera.orthographic = true;
         _camera.transform.position = new Vector2(Screen.width / 2, Screen.height / 2);
         _camera.nearClipPlane = -200000;
@@ -81,7 +81,7 @@ public class ViewManager : MonoBehaviour, IManager
         currViewId = (int)EView.None;
         nextViewId = (int)EView.None;
 
-        _windows.Clear();
+        cacheViewDic.Clear();
 
         IsInitialized = false;
     }
@@ -96,12 +96,23 @@ public class ViewManager : MonoBehaviour, IManager
         ViewMachine.Instance.DoChangeView();
     }
 
-    public void ChangeView(int stateId)
+    public void ChangeView(int viewId)
     {
-        if(stateId > (int)EView.None && stateId < (int)EView.Count)
+        if(viewId > (int)EView.None && viewId < (int)EView.Count)
         {
-            nextViewId = stateId;
+            nextViewId = viewId;
         }
+    }
+
+    public GameObject CreateView(int viewId)
+    {
+        GameObject viewGo;
+        if(!cacheViewDic.TryGetValue(viewId, out viewGo))
+        {
+            viewGo = GameObject.Instantiate(Resources.Load<GameObject>($"{System.Enum.GetName(typeof(EView), viewId)}View"));
+            cacheViewDic.Add(viewId, viewGo);
+        }
+        return viewGo;
     }
 
 }

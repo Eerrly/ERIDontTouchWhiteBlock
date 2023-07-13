@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 [View(EView.None)]
 public class View : BaseView
@@ -12,6 +12,7 @@ public class View : BaseView
     }
 
     public GameObject viewGo;
+    public GraphicRaycaster raycaster;
 
     public override void Reset()
     {
@@ -20,7 +21,7 @@ public class View : BaseView
 
         Canvas canvas = viewGo.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        canvas.worldCamera = ViewManager.Instance.UICamera;
+        canvas.worldCamera = ViewManager.Instance.ViewCamera;
         canvas.pixelPerfect = false;
         canvas.sortingOrder = (int)ViewId * 10;
         canvas.planeDistance = 8000 - canvas.sortingOrder;
@@ -28,12 +29,15 @@ public class View : BaseView
         {
             canvas.planeDistance = 0;
         }
+
+        raycaster = viewGo.GetComponent<GraphicRaycaster>();
     }
 
     public override bool TryEnter() { return false; }
 
     public override void OnEnter() {
-        Util.SetGameObjectLayer(viewGo, Setting.LAYER_UI, true);
+        Util.SetGameObjectLayer(viewGo, Setting.LAYER_VIEW, true);
+        raycaster.enabled = true;
     }
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime) { }
@@ -42,6 +46,7 @@ public class View : BaseView
 
     public override void OnExit() {
         Util.SetGameObjectLayer(viewGo, Setting.LAYER_HIDE, true);
+        raycaster.enabled = false;
     }
 
 }
