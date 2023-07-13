@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ViewManager : MonoBehaviour, IManager
+public class ViewManager : SingletonMono<ViewManager>, IManager
 {
     public int currViewId;
 
@@ -10,28 +10,11 @@ public class ViewManager : MonoBehaviour, IManager
 
     public bool IsInitialized { get; set; }
 
-    private static ViewManager instance;
-
-    public static ViewManager Instance
-    {
-        get
-        {
-            if(instance == null)
-            {
-                var go = new GameObject("ViewManager");
-                go.transform.SetParent(Global.Instance.transform, false);
-                instance = go.AddComponent<ViewManager>();
-            }
-            return instance;
-        }
-    }
-
     private Camera _camera;
     public Camera ViewCamera => _camera;
 
     private Camera _noneCamera;
     public Camera NoneCamera => _noneCamera;
-
 
     public Dictionary<int, GameObject> cacheViewDic = new Dictionary<int, GameObject>();
 

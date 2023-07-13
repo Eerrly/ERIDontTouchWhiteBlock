@@ -5,35 +5,24 @@ using UnityEngine;
 /// <summary>
 /// 别踩白块游戏核心管理器
 /// </summary>
-public class BlockScrollManager : MonoBehaviour, IManager
+public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
 {
     /// <summary>
     /// 滚动速度
     /// </summary>
-    [System.NonSerialized] public float scrollSpeed = 300;
+    [System.NonSerialized] public float scrollSpeed = GameConstant.InitScrollSpeed;
     /// <summary>
     /// 游戏总时长时间戳
     /// </summary>
     [System.NonSerialized] public float gameTimeStamp = 0;
     /// <summary>
+    /// 游戏得分
+    /// </summary>
+    [System.NonSerialized] public int gameScore = 0;
+    /// <summary>
     /// 是否按钮按下
     /// </summary>
     [System.NonSerialized] public bool IsPointerDown = false;
-
-    private static BlockScrollManager instance = null;
-    public static BlockScrollManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                var go = new GameObject("BlockScrollManager");
-                go.transform.SetParent(Global.Instance.transform, false);
-                instance = go.AddComponent<BlockScrollManager>();
-            }
-            return instance;
-        }
-    }
 
     public bool IsInitialized { get; set; }
 

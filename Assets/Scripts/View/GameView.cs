@@ -11,10 +11,10 @@ public class GameView : View
 {
     Text timeTxt;
     Text scoreTxt;
+    VerticalLayoutGroup layoutGroup;
 
     float topY;
     float height;
-    int score = 0;
 
     /// <summary>
     /// 行的列表
@@ -43,26 +43,34 @@ public class GameView : View
         base.OnEnter();
         oneLoopList = new OneLoopList<BlockRawView>();
         blockClickEvent.AddListener(OnBlockClickAction);
-        blockRawList = new List<BlockRawView>(viewGo.GetComponentsInChildren<BlockRawView>(true));
+
         timeTxt = viewGo.transform.Find("Text_Time").GetComponent<Text>();
         scoreTxt = viewGo.transform.Find("Text_Score").GetComponent<Text>();
+        layoutGroup = viewGo.transform.Find("BlockScrollView/BlockScrollViewPort").GetComponent<VerticalLayoutGroup>();
+        layoutGroup.enabled = true;
 
+        blockRawList = new List<BlockRawView>(viewGo.GetComponentsInChildren<BlockRawView>(true));
         topY = blockRawList[0].transform.localPosition.y;
         height = blockRawList[0].transform.GetComponent<RectTransform>().sizeDelta.y;
+
         for (int i = 0; i < blockRawList.Count; i++)
         {
-            if (i < blockRawList.Count - 1)
-            {
-                blockRawList[i].result = BlockScrollManager.Instance.GetRandomResult();
-            }
+            // 初始化，最后几行不用点
+            blockRawList[i].result = i < 2 ? BlockScrollManager.Instance.GetRandomResult() : default(byte);
             blockRawList[i].OnInitialize(blockClickEvent);
             oneLoopList.AddLast(new OneLoopNode<BlockRawView>() { item = blockRawList[i] });
         }
         viewHead = oneLoopList.Head;
+
+        layoutGroup.enabled = false;
     }
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
     {
+        if(layoutGroup.enabled)
+        {
+            return;
+        }
         Debug.Log("GameView OnUpdate!");
         for (int i = 0; i < blockRawList.Count; i++)
         {
@@ -89,8 +97,8 @@ public class GameView : View
         BlockScrollManager.Instance.gameTimeStamp += deltaTime;
         Time.timeScale = Global.Instance.timeScale;
 
-        timeTxt.text = $"Time:{BlockScrollManager.Instance.gameTimeStamp}";
-        scoreTxt.text = $"Score:{score}";
+        timeTxt.text = $"Time : {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
+        scoreTxt.text = $"Score : {BlockScrollManager.Instance.gameScore}";
     }
 
     /// <summary>
@@ -102,12 +110,13 @@ public class GameView : View
     {
         if (GameConstant.BlockResults[clickBlockIndex] == block.blockRaw.result)
         {
-            score++;
+            BlockScrollManager.Instance.gameScore++;
             block.SetImageColor(Color.gray);
         }
         else
         {
             block.SetImageColor(Color.red);
+            ViewManager.Instance.ChangeView((int)EView.GameOver);
         }
     }
 
@@ -116,6 +125,7 @@ public class GameView : View
         base.OnExit();
         blockRawList.Clear();
         blockClickEvent.RemoveListener(OnBlockClickAction);
+        layoutGroup.enabled = true;
     }
 
 }

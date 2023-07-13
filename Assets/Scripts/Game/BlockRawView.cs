@@ -40,10 +40,7 @@ public class BlockRawView : MonoBehaviour
             byte tmpIndex = (byte)i;
 
             blockList[i].OnInitialize(tmpIndex, blockClickEvent, this);
-            if (result != default(byte))
-            {
-                blockList[i].SetImageColor((result & (1 << (blockList.Length - i - 1))) == 0 ? Color.white : Color.black);
-            }
+            blockList[i].SetImageColor((result == default(byte)) || (result & (1 << (blockList.Length - i - 1))) == 0 ? Color.white : Color.black);
         }
     }
 

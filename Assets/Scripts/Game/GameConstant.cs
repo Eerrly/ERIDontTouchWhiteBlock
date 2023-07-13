@@ -11,4 +11,9 @@ public class GameConstant
     /// 0001 -> 1
     /// </summary>
     public static readonly byte[] BlockResults = new byte[] { 8, 4, 2, 1 };
+
+    /// <summary>
+    /// 初始滚动速度
+    /// </summary>
+    public static readonly int InitScrollSpeed = 400;
 }

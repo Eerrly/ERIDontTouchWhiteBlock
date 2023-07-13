@@ -26,4 +26,22 @@ public class Util
         }
     }
 
+    public static string FormatTimeStamp2HMS(int timeStamp)
+    {
+        int hour = timeStamp / 3600;
+        int min = 0;
+        int sec = 0;
+        if (hour > 0)
+        {
+            min = (timeStamp % 3600) / 60;
+            sec = min > 0 ? (timeStamp % 3600) % 60 : timeStamp % 3600;
+        }
+        else
+        {
+            min = timeStamp / 60;
+            sec = min > 0 ? timeStamp % 60 : timeStamp;
+        }
+        return hour > 0 ? string.Format("{0:00}:{1:00}:{2:00}", hour, min, sec) : string.Format("{0:00}:{1:00}", min, sec);
+    }
+
 }

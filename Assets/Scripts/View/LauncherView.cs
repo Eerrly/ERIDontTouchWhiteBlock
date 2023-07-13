@@ -26,6 +26,9 @@ public class LauncherView : View
     private void OnGameButtonClicked()
     {
         Debug.Log("LauncherView OnGameButtonClicked!");
+        BlockScrollManager.Instance.gameScore = 0;
+        BlockScrollManager.Instance.gameTimeStamp = 0;
+        BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed;
         ViewManager.Instance.ChangeView((int)EView.Game);
     }
 
