@@ -16,7 +16,6 @@ public class SettingView : View
 
     public override void OnEnter()
     {
-        Debug.Log("SettingView OnEnter!");
         base.OnEnter();
         closeBtn = viewGo.transform.Find("Button_Close").GetComponent<Button>();
         audioVolSlider = viewGo.transform.Find("Slider_AudioVol").GetComponent<Slider>();
@@ -30,19 +29,16 @@ public class SettingView : View
 
     private void OnCloseButtonClicked()
     {
-        Debug.Log("SettingView OnCloseButtonClicked!");
         ViewManager.Instance.ChangeView((int)EView.Launcher);
     }
 
     private void OnAudioVolSliderValueChanged(float value)
     {
-        Debug.Log($"SettingView OnAudioVolSliderValueChanged! value:{value}");
         AudioManager.Instance.Volume = value;
     }
 
     private void OnAudioToggleValueChanged(bool isOn)
     {
-        Debug.Log($"SettingView OnAudioToggleValueChanged! isOn:{isOn}");
         if(isOn)
         {
             AudioManager.Instance.PlayAudio();
@@ -55,12 +51,10 @@ public class SettingView : View
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
     {
-        Debug.Log("SettingView OnUpdate!");
     }
 
     public override void OnExit()
     {
-        Debug.Log("SettingView OnExit!");
         base.OnExit();
         closeBtn.onClick.RemoveListener(OnCloseButtonClicked);
         audioVolSlider.onValueChanged.RemoveListener(OnAudioVolSliderValueChanged);

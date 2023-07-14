@@ -41,7 +41,6 @@ public class GameView : View
 
     public override void OnEnter()
     {
-        Debug.Log("GameView OnEnter!");
         base.OnEnter();
         oneLoopList = new OneLoopList<BlockRawView>();
         blockClickEvent.AddListener(OnBlockClickAction);
@@ -81,7 +80,6 @@ public class GameView : View
         {
             return;
         }
-        Debug.Log("GameView OnUpdate!");
         for (int i = 0; i < blockRawList.Count; i++)
         {
             blockRawList[i].transform.localPosition += Vector3.down * Time.deltaTime * BlockScrollManager.Instance.scrollSpeed;
@@ -107,8 +105,8 @@ public class GameView : View
         BlockScrollManager.Instance.gameTimeStamp += deltaTime;
         Time.timeScale = Global.Instance.timeScale;
 
-        timeTxt.text = $"Time : {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
-        scoreTxt.text = $"Score : {BlockScrollManager.Instance.gameScore}";
+        timeTxt.text = $"时间 : {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
+        scoreTxt.text = $"分数 : {BlockScrollManager.Instance.gameScore}";
     }
 
     /// <summary>
