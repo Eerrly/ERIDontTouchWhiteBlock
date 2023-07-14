@@ -24,6 +24,11 @@ public class LauncherView : View
 
     private void OnGameButtonClicked()
     {
+        if (!SDKManager.Instance.IsAntiAddictionSuccess)
+        {
+            SDKManager.Instance.StartUp();
+            return;
+        }
         BlockScrollManager.Instance.gameScore = 0;
         BlockScrollManager.Instance.gameTimeStamp = 0;
         BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed;
