@@ -17,6 +17,7 @@ public class Global : MonoBehaviour
 
     void Start()
     {
+        SDKManager.Instance.OnInitialize();
         AudioManager.Instance.OnInitialize();
         ViewManager.Instance.OnInitialize();
         BlockScrollManager.Instance.OnInitialize();
