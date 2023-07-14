@@ -105,8 +105,8 @@ public class GameView : View
         BlockScrollManager.Instance.gameTimeStamp += deltaTime;
         Time.timeScale = Global.Instance.timeScale;
 
-        timeTxt.text = $"时间 : {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
-        scoreTxt.text = $"分数 : {BlockScrollManager.Instance.gameScore}";
+        timeTxt.text = $"时间 {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
+        scoreTxt.text = $"分数 {BlockScrollManager.Instance.gameScore}";
     }
 
     /// <summary>
@@ -116,6 +116,8 @@ public class GameView : View
     /// <param name="block"></param>
     void OnBlockClickAction(byte clickBlockIndex, Block block)
     {
+        if (Global.Instance.timeScale == 0)
+            return;
         if (GameConstant.BlockResults[clickBlockIndex] == block.blockRaw.result)
         {
             BlockScrollManager.Instance.gameScore++;
