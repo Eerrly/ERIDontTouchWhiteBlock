@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 [View(EView.GameOver)]
 public class GameOverView : View
@@ -22,10 +19,6 @@ public class GameOverView : View
         confirmBtn = viewGo.transform.Find("Button_Confirm").GetComponent <Button>();
         confirmBtn.onClick.AddListener(OnConfirmButtonClicked);
         infoTxt.text = $"时间 {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}\n分数 {BlockScrollManager.Instance.gameScore}";
-    }
-
-    public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
-    {
     }
 
     public override void OnExit()

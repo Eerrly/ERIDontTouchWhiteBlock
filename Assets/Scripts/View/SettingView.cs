@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 [View(EView.Setting)]
 public class SettingView : View
@@ -47,10 +46,6 @@ public class SettingView : View
         {
             AudioManager.Instance.StopAudio();
         }
-    }
-
-    public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
-    {
     }
 
     public override void OnExit()

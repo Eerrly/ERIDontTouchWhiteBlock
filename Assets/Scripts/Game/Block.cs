@@ -47,8 +47,12 @@ public class Block : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, I
     /// <param name="eventData"></param>
     public void OnPointerDown(PointerEventData eventData)
     {
-        BlockScrollManager.Instance.IsPointerDown = true;
-        blockClickEvent.Invoke((byte)index, this);
+        if (!BlockScrollManager.Instance.IsPointerDown)
+        {
+            BlockScrollManager.Instance.IsPointerDown = true;
+            this.blockRaw.isTriggerPointDown = true;
+            blockClickEvent?.Invoke((byte)index, this);
+        }
     }
 
     /// <summary>
@@ -59,7 +63,7 @@ public class Block : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler, I
     {
         if (BlockScrollManager.Instance.IsPointerDown)
         {
-            blockClickEvent.Invoke((byte)index, this);
+            blockClickEvent?.Invoke((byte)index, this);
         }
     }
 

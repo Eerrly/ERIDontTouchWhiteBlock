@@ -15,5 +15,5 @@ public class GameConstant
     /// <summary>
     /// 初始滚动速度
     /// </summary>
-    public static readonly int InitScrollSpeed = 500;
+    public static readonly int InitScrollSpeed = 1000;
 }

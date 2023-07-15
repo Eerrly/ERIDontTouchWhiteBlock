@@ -2,7 +2,6 @@
 using TapTap.AntiAddiction;
 using TapTap.AntiAddiction.Model;
 using UnityEngine;
-using UnityEngine.U2D;
 
 public enum EAntiAddictioCode
 {
@@ -23,6 +22,9 @@ public class SDKManager : SingletonMono<SDKManager>, IManager
     public bool IsAntiAddictionSuccess { get; set; }
 
     AntiAddictionConfig config;
+
+    Action OnAntiAddictionLoginSuccess;
+    Action OnAntiAddictionLogoutAccount;
 
     public void OnInitialize()
     {
@@ -46,9 +48,12 @@ public class SDKManager : SingletonMono<SDKManager>, IManager
         {
             case (int)EAntiAddictioCode.LoginSuccess:
                 IsAntiAddictionSuccess = true;
+                OnAntiAddictionLoginSuccess?.Invoke();
                 break;
             case (int)EAntiAddictioCode .LogoutAccount:
-                Application.Quit();
+                IsAntiAddictionSuccess = false;
+                AntiAddictionUIKit.Exit();
+                OnAntiAddictionLogoutAccount?.Invoke();
                 break;
         }
     }
@@ -56,8 +61,10 @@ public class SDKManager : SingletonMono<SDKManager>, IManager
     /// <summary>
     /// 实名认证
     /// </summary>
-    public void StartUp()
+    public void StartUp(Action onLoginSuccessCallback, Action onLogoutAccountCallback)
     {
+        OnAntiAddictionLoginSuccess += onLoginSuccessCallback;
+        OnAntiAddictionLogoutAccount += onLogoutAccountCallback;
         AntiAddictionUIKit.Startup(SystemInfo.deviceUniqueIdentifier);
     }
 
@@ -74,6 +81,8 @@ public class SDKManager : SingletonMono<SDKManager>, IManager
 
     public void OnRelease()
     {
+        OnAntiAddictionLoginSuccess = null;
+        OnAntiAddictionLogoutAccount = null;
     }
 
 

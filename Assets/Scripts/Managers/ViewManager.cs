@@ -81,6 +81,10 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
 
     public void ChangeView(int viewId)
     {
+        if(viewId == currViewId)
+        {
+            return;
+        }
         if(viewId > (int)EView.None && viewId < (int)EView.Count)
         {
             nextViewId = viewId;

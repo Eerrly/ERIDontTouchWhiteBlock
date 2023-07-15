@@ -64,8 +64,7 @@ public class GameView : View
 
         for (int i = 0; i < blockRawList.Count; i++)
         {
-            // 初始化，最后几行不用点
-            blockRawList[i].result = i < 2 ? BlockScrollManager.Instance.GetRandomResult() : default(byte);
+            blockRawList[i].result = default(byte);
             blockRawList[i].OnInitialize(blockClickEvent);
             oneLoopList.AddLast(new OneLoopNode<BlockRawView>() { item = blockRawList[i] });
         }
@@ -97,6 +96,12 @@ public class GameView : View
         }
         if (viewHead.item.transform.localPosition.y <= topY - height)
         {
+            // 漏了没点
+            if (newLastNode.item.result != default(byte) && !newLastNode.item.isTriggerPointDown)
+            {
+                ViewManager.Instance.ChangeView((int)EView.GameOver);
+                return;
+            }
             viewHead = nextNode;
             newLastNode.item.result = default(byte);
         }
@@ -123,6 +128,7 @@ public class GameView : View
             BlockScrollManager.Instance.gameScore++;
             block.SetImageColor(Color.gray);
         }
+        // 点到白的了
         else
         {
             block.SetImageColor(Color.red);

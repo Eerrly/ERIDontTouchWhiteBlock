@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 [View(EView.Launcher)]
 public class LauncherView : View
@@ -26,22 +25,34 @@ public class LauncherView : View
     {
         if (!SDKManager.Instance.IsAntiAddictionSuccess)
         {
-            SDKManager.Instance.StartUp();
+            SDKManager.Instance.StartUp(OnAntiAddictionLoginSuccess, OnAntiAddictionLogoutAccount);
             return;
         }
+        OnAntiAddictionLoginSuccess();
+    }
+
+    /// <summary>
+    /// 登录&防沉迷 成功
+    /// </summary>
+    private void OnAntiAddictionLoginSuccess()
+    {
         BlockScrollManager.Instance.gameScore = 0;
         BlockScrollManager.Instance.gameTimeStamp = 0;
         BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed;
         ViewManager.Instance.ChangeView((int)EView.Game);
     }
 
+    /// <summary>
+    /// 登录&防沉迷失败
+    /// </summary>
+    private void OnAntiAddictionLogoutAccount()
+    {
+        ViewManager.Instance.ChangeView((int)EView.Launcher);
+    }
+
     private void OnSettingButtonClicked()
     {
         ViewManager.Instance.ChangeView((int)EView.Setting);
-    }
-
-    public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
-    {
     }
 
     public override void OnExit()

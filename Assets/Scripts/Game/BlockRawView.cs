@@ -16,6 +16,11 @@ public class BlockRawView : MonoBehaviour
     public byte result;
 
     /// <summary>
+    /// 当前行触发过点击
+    /// </summary>
+    public bool isTriggerPointDown;
+
+    /// <summary>
     /// 块点击事件
     /// </summary>
     private BlockClickEvent blockClickEvent;
@@ -35,6 +40,7 @@ public class BlockRawView : MonoBehaviour
     /// </summary>
     public void RefreshBlockList()
     {
+        this.isTriggerPointDown = false;
         for (int i = 0; i < blockList.Length; i++)
         {
             byte tmpIndex = (byte)i;
