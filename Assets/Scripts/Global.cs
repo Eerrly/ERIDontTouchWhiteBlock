@@ -9,6 +9,7 @@ public class Global : MonoBehaviour
     public static Global Instance => instance;
 
     public float timeScale = 1;
+    public bool isGameover = false;
 
     private void Awake()
     {
@@ -21,6 +22,16 @@ public class Global : MonoBehaviour
         AudioManager.Instance.OnInitialize();
         ViewManager.Instance.OnInitialize();
         BlockScrollManager.Instance.OnInitialize();
+        MonoManager.Instance.OnInitialize();
+    }
+
+    private void OnDestroy()
+    {
+        MonoManager.Instance.OnRelease();
+        BlockScrollManager.Instance.OnRelease();
+        ViewManager.Instance.OnRelease();
+        AudioManager.Instance.OnRelease();
+        SDKManager.Instance.OnRelease();
     }
 
 }

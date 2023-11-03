@@ -42,6 +42,7 @@ public class GameView : View
     public override void OnEnter()
     {
         base.OnEnter();
+        Global.Instance.isGameover = false;
         oneLoopList = new OneLoopList<BlockRawView>();
         blockClickEvent.AddListener(OnBlockClickAction);
 
@@ -75,7 +76,7 @@ public class GameView : View
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
     {
-        if(layoutGroup.enabled)
+        if(layoutGroup.enabled || Global.Instance.isGameover)
         {
             return;
         }
@@ -121,7 +122,7 @@ public class GameView : View
     /// <param name="block"></param>
     void OnBlockClickAction(byte clickBlockIndex, Block block)
     {
-        if (Global.Instance.timeScale == 0)
+        if (Global.Instance.timeScale == 0 || Global.Instance.isGameover)
             return;
         if (GameConstant.BlockResults[clickBlockIndex] == block.blockRaw.result)
         {
@@ -132,20 +133,39 @@ public class GameView : View
         else
         {
             block.SetImageColor(Color.red);
-            ViewManager.Instance.ChangeView((int)EView.GameOver);
+            MonoManager.Instance.StartCoroutine(CoDoGameOver());
         }
     }
 
+    /// <summary>
+    /// 游戏结束
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CoDoGameOver()
+    {
+        Global.Instance.isGameover = true;
+        yield return new WaitForSeconds(1.0f);
+        ViewManager.Instance.ChangeView((int)EView.GameOver);
+    }
+
+    /// <summary>
+    /// 暂停键按钮点击事件
+    /// </summary>
     private void OnPassButtonClicked()
     {
+        if(Global.Instance.isGameover) { return; }
         Global.Instance.timeScale = 0;
         passBtn.gameObject.SetActive(false);
         playBtn.gameObject.SetActive(true);
         AudioManager.Instance.PauseAudio();
     }
 
+    /// <summary>
+    /// 继续键按钮点击事件
+    /// </summary>
     private void OnPlayButtonClicked()
     {
+        if (Global.Instance.isGameover) { return; }
         Global.Instance.timeScale = 1;
         passBtn.gameObject.SetActive(true);
         playBtn.gameObject.SetActive(false);

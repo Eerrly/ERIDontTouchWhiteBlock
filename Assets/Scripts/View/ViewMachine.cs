@@ -1,4 +1,7 @@
-﻿public class ViewMachine : BaseMachine
+﻿/// <summary>
+/// 界面运行控制
+/// </summary>
+public class ViewMachine : BaseMachine
 {
 
     private static ViewMachine instance;
@@ -57,6 +60,10 @@
         currView.OnUpdate(deltaTime, unscaleDeltaTime);
     }
 
+    /// <summary>
+    /// 尝试更改当前界面
+    /// </summary>
+    /// <returns>是否可以更改当前界面</returns>
     public bool DoChangeView()
     {
         var nextViewId = ViewManager.Instance.nextViewId;

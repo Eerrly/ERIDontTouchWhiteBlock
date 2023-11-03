@@ -16,4 +16,11 @@ public class GameConstant
     /// 初始滚动速度
     /// </summary>
     public static readonly int InitScrollSpeed = 1000;
+
+    /// <summary>
+    /// 本地排行容量
+    /// </summary>
+    public static readonly int MaxRankInfoCount = 7;
+
+
 }

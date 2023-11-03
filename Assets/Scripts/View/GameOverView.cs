@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 [View(EView.GameOver)]
 public class GameOverView : View
@@ -19,6 +20,8 @@ public class GameOverView : View
         confirmBtn = viewGo.transform.Find("Button_Confirm").GetComponent <Button>();
         confirmBtn.onClick.AddListener(OnConfirmButtonClicked);
         infoTxt.text = $"时间 {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}\n分数 {BlockScrollManager.Instance.gameScore}";
+
+        Util.SetScoreDatas(new ScoreData(BlockScrollManager.Instance.gameScore, BlockScrollManager.Instance.gameTimeStamp, System.DateTime.Now.ToString()));
     }
 
     public override void OnExit()

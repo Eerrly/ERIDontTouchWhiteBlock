@@ -2,11 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 界面管理器
+/// </summary>
 public class ViewManager : SingletonMono<ViewManager>, IManager
 {
-    public int currViewId;
+    /// <summary>
+    /// 当前界面ID
+    /// </summary>
+    [System.NonSerialized] public int currViewId;
 
-    public int nextViewId;
+    /// <summary>
+    /// 下一个界面ID
+    /// </summary>
+    [System.NonSerialized] public int nextViewId;
 
     public bool IsInitialized { get; set; }
 
@@ -18,6 +27,9 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
 
     public Dictionary<int, GameObject> cacheViewDic = new Dictionary<int, GameObject>();
 
+    /// <summary>
+    /// 初始化
+    /// </summary>
     public void OnInitialize()
     {
         currViewId = (int)EView.None;
@@ -25,6 +37,10 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
         StartCoroutine(nameof(CoInitialize));
     }
 
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator CoInitialize()
     {
         var go = new GameObject("UI");
@@ -59,6 +75,9 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
         IsInitialized = true;
     }
 
+    /// <summary>
+    /// 释放
+    /// </summary>
     public void OnRelease()
     {
         currViewId = (int)EView.None;
@@ -79,6 +98,10 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
         ViewMachine.Instance.DoChangeView();
     }
 
+    /// <summary>
+    /// 更改当前界面
+    /// </summary>
+    /// <param name="viewId">界面ID</param>
     public void ChangeView(int viewId)
     {
         if(viewId == currViewId)
@@ -91,6 +114,11 @@ public class ViewManager : SingletonMono<ViewManager>, IManager
         }
     }
 
+    /// <summary>
+    /// 创建界面
+    /// </summary>
+    /// <param name="viewId">界面ID</param>
+    /// <returns>界面实体</returns>
     public GameObject CreateView(int viewId)
     {
         GameObject viewGo;
