@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// 难度等级
+/// </summary>
+public enum ProblemLevel
+{
+    Easy = 0,
+    Medium = 1,
+    Challeng = 2,
+}
+
+/// <summary>
 /// 别踩白块游戏核心管理器
 /// </summary>
 public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
@@ -10,7 +20,7 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     /// <summary>
     /// 滚动速度
     /// </summary>
-    [System.NonSerialized] public float scrollSpeed = GameConstant.InitScrollSpeed;
+    [System.NonSerialized] public float scrollSpeed = 0;
     /// <summary>
     /// 游戏总时长时间戳
     /// </summary>
@@ -23,6 +33,11 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     /// 是否按钮按下
     /// </summary>
     [System.NonSerialized] public bool IsPointerDown = false;
+
+    /// <summary>
+    /// 难度等级
+    /// </summary>
+    [System.NonSerialized] public ProblemLevel problemLevel = ProblemLevel.Easy;
 
     public bool IsInitialized { get; set; }
 
@@ -40,6 +55,7 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     public void OnInitialize()
     {
         random = new System.Random();
+        problemLevel = (ProblemLevel)PlayerPrefs.GetInt("Setting_ProblemLevel", 0);
         IsInitialized = true;
     }
 

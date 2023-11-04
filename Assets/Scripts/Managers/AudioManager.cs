@@ -48,6 +48,13 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
         audioSource?.UnPause();
     }
 
+    public void SetAudio(string audioPath, bool loop)
+    {
+        audioClip = Resources.Load<AudioClip>(audioPath);
+        audioSource.loop = loop;
+        audioSource.clip = audioClip;
+    }
+
     public void PlayAudio()
     {
         audioSource?.Play();

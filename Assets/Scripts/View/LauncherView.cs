@@ -4,6 +4,8 @@ using UnityEngine.UI;
 [View(EView.Launcher)]
 public class LauncherView : View
 {
+    readonly string Background_BGM = "Audios/BackgroundMusic";
+
     Button gameBtn;
     Button settingBtn;
     Button localrankBtn;
@@ -17,6 +19,7 @@ public class LauncherView : View
     public override void OnEnter()
     {
         base.OnEnter();
+
         gameBtn = viewGo.transform.Find("Button_Game").GetComponent<Button>();
         settingBtn = viewGo.transform.Find("Button_Setting").GetComponent<Button>();
         localrankBtn = viewGo.transform.Find("Button_LocalRank").GetComponent<Button>();
@@ -42,7 +45,6 @@ public class LauncherView : View
     {
         BlockScrollManager.Instance.gameScore = 0;
         BlockScrollManager.Instance.gameTimeStamp = 0;
-        BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed;
         ViewManager.Instance.ChangeView((int)EView.Game);
     }
 

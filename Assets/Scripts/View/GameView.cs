@@ -11,12 +11,12 @@ public class GameView : View
 {
     Text timeTxt;
     Text scoreTxt;
-    VerticalLayoutGroup layoutGroup;
     Button passBtn;
     Button playBtn;
 
-    float topY;
-    float height;
+    int passedBlockCount;
+    float singleBlockHeight;
+    Rect rectViewport;
 
     /// <summary>
     /// 行的列表
@@ -42,7 +42,11 @@ public class GameView : View
     public override void OnEnter()
     {
         base.OnEnter();
+        BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed[(int)BlockScrollManager.Instance.problemLevel];
+
+        passedBlockCount = 0;
         Global.Instance.isGameover = false;
+
         oneLoopList = new OneLoopList<BlockRawView>();
         blockClickEvent.AddListener(OnBlockClickAction);
 
@@ -56,46 +60,35 @@ public class GameView : View
         passBtn.onClick.AddListener(OnPassButtonClicked);
         playBtn.onClick.AddListener(OnPlayButtonClicked);
 
-        layoutGroup = viewGo.transform.Find("BlockScrollView/BlockScrollViewPort").GetComponent<VerticalLayoutGroup>();
-        layoutGroup.enabled = true;
-
         blockRawList = new List<BlockRawView>(viewGo.GetComponentsInChildren<BlockRawView>(true));
-        topY = blockRawList[0].transform.localPosition.y;
-        height = blockRawList[0].transform.GetComponent<RectTransform>().sizeDelta.y;
+        rectViewport = viewGo.transform.Find("BlockScrollView").GetComponent<RectTransform>().rect;
+        singleBlockHeight = rectViewport.height / (blockRawList.Count - 1);
 
-        for (int i = 0; i < blockRawList.Count; i++)
-        {
-            blockRawList[i].result = default(byte);
-            blockRawList[i].OnInitialize(blockClickEvent);
-            oneLoopList.AddLast(new OneLoopNode<BlockRawView>() { item = blockRawList[i] });
-        }
-        viewHead = oneLoopList.Head;
-
-        layoutGroup.enabled = false;
+        InitBlockViewItems();
     }
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
     {
-        if(layoutGroup.enabled || Global.Instance.isGameover)
+        if(Global.Instance.isGameover)
         {
             return;
         }
         for (int i = 0; i < blockRawList.Count; i++)
         {
-            blockRawList[i].transform.localPosition += Vector3.down * Time.deltaTime * BlockScrollManager.Instance.scrollSpeed;
+            blockRawList[i].transform.localPosition += Vector3.down * deltaTime * BlockScrollManager.Instance.scrollSpeed;
         }
         OneLoopNode<BlockRawView> nextNode = viewHead.next.next.next.next;
         OneLoopNode<BlockRawView> newLastNode = viewHead.next.next.next;
-        if (viewHead.item.transform.localPosition.y <= topY)
+        if (viewHead.item.transform.localPosition.y <= rectViewport.height)
         {
-            nextNode.item.transform.localPosition = viewHead.item.transform.localPosition + Vector3.up * height;
-            if (nextNode.item.result == default(byte))
+            nextNode.item.transform.localPosition = viewHead.item.transform.localPosition + Vector3.up * singleBlockHeight;
+            if (nextNode.item.result == default(byte) && passedBlockCount > 1)
             {
                 nextNode.item.result = BlockScrollManager.Instance.GetRandomResult();
                 nextNode.item.RefreshBlockList();
             }
         }
-        if (viewHead.item.transform.localPosition.y <= topY - height)
+        if (viewHead.item.transform.localPosition.y <= rectViewport.height - singleBlockHeight)
         {
             // 漏了没点
             if (newLastNode.item.result != default(byte) && !newLastNode.item.isTriggerPointDown)
@@ -105,6 +98,7 @@ public class GameView : View
             }
             viewHead = nextNode;
             newLastNode.item.result = default(byte);
+            passedBlockCount++;
         }
 
         BlockScrollManager.Instance.scrollSpeed += deltaTime;
@@ -113,6 +107,28 @@ public class GameView : View
 
         timeTxt.text = $"时间 {Util.FormatTimeStamp2HMS((int)BlockScrollManager.Instance.gameTimeStamp)}";
         scoreTxt.text = $"分数 {BlockScrollManager.Instance.gameScore}";
+    }
+
+    /// <summary>
+    /// 初始化每一个块的数据与位置
+    /// </summary>
+    private void InitBlockViewItems()
+    {
+        var anchordPosition = Vector2.zero;
+        var sizeDelta = Vector2.zero;
+        for (int i = 0; i < blockRawList.Count; i++)
+        {
+            anchordPosition.x = 0;
+            anchordPosition.y = -i * singleBlockHeight;
+            blockRawList[i].GetComponent<RectTransform>().anchoredPosition = anchordPosition;
+            sizeDelta.x = rectViewport.width;
+            sizeDelta.y = singleBlockHeight;
+            blockRawList[i].GetComponent<RectTransform>().sizeDelta = sizeDelta;
+            blockRawList[i].result = default(byte);
+            blockRawList[i].OnInitialize(blockClickEvent);
+            oneLoopList.AddLast(new OneLoopNode<BlockRawView>() { item = blockRawList[i] });
+        }
+        viewHead = oneLoopList.Head;
     }
 
     /// <summary>
@@ -177,7 +193,6 @@ public class GameView : View
         base.OnExit();
         blockRawList.Clear();
         blockClickEvent.RemoveListener(OnBlockClickAction);
-        layoutGroup.enabled = true;
     }
 
 }
