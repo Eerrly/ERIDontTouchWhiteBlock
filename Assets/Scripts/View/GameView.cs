@@ -74,6 +74,7 @@ public class GameView : View
         singleBlockHeight = rectViewport.height / (blockRawList.Count - 1);
 
         InitBlockViewItems();
+        Global.Instance.isGamePlaying = true;
     }
 
     public override void OnUpdate(float deltaTime, float unscaleDeltaTime)
@@ -195,6 +196,7 @@ public class GameView : View
     private void OnPassButtonClicked()
     {
         if(Global.Instance.isGameover) { return; }
+        Global.Instance.isGamePlaying = true;
         Global.Instance.timeScale = 0;
         passBtn.gameObject.SetActive(false);
         playBtn.gameObject.SetActive(true);
@@ -207,15 +209,19 @@ public class GameView : View
     private void OnPlayButtonClicked()
     {
         if (Global.Instance.isGameover) { return; }
+        Global.Instance.isGamePlaying = false;
         Global.Instance.timeScale = 1;
         passBtn.gameObject.SetActive(true);
         playBtn.gameObject.SetActive(false);
         AudioManager.Instance.UnPauseAudio();
     }
 
+    
+
     public override void OnExit()
     {
         base.OnExit();
+        Global.Instance.isGamePlaying = false;
         blockRawList.Clear();
         blockClickEvent.RemoveListener(OnBlockClickAction);
     }

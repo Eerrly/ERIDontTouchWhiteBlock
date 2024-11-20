@@ -9,6 +9,7 @@ public class Global : MonoBehaviour
     public static Global Instance => instance;
 
     public float timeScale = 1;
+    public bool isGamePlaying = false;
     public bool isGameover = false;
 
     private void Awake()

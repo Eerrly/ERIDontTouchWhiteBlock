@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using SonicBloom.Koreo;
+using SonicBloom.Koreo.Players;
 using UnityEngine;
 
 public class AudioManager : SingletonMono<AudioManager>, IManager
@@ -25,17 +28,37 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
 
     private AudioClip audioClip;
     private AudioSource audioSource;
+    private Koreographer koreographer;
+    private SimpleMusicPlayer simpleMusicPlayer;
+
+    public Action<KoreographyEvent> OnKoreographyEventAction;
 
     public void OnInitialize()
     {
         audioClip = Resources.Load<AudioClip>("Audios/BackgroundMusic");
-        audioSource = gameObject.AddComponent<AudioSource>();
+        
+        koreographer = gameObject.AddComponent<Koreographer>();
+        simpleMusicPlayer = gameObject.AddComponent<SimpleMusicPlayer>();
+        audioSource = gameObject.GetComponent<AudioSource>();
+        
         audioSource.loop = true;
-        audioSource.clip = audioClip;
         Volume = 1.0f;
-        audioSource.Play();
+        
+        koreographer.RegisterForEvents("TestKoreographyTrack", OnKoreographyEvent);
+        simpleMusicPlayer.LoadSong(Resources.Load<Koreography>("Audios/BackgroundMusicKoreography"), 0, false);
+        simpleMusicPlayer.Play();
+        
+        // audioSource.loop = true;
+        // audioSource.clip = audioClip;
+        // Volume = 1.0f;
+        // audioSource.Play();
 
         IsInitialized = true;
+    }
+
+    private void OnKoreographyEvent(KoreographyEvent koreographyEvent)
+    {
+        OnKoreographyEventAction?.Invoke(koreographyEvent);
     }
 
     public void PauseAudio()

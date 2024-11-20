@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using SonicBloom.Koreo;
 using UnityEngine;
 
 /// <summary>
@@ -41,6 +42,7 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     public bool IsInitialized { get; set; }
 
     private System.Random random;
+    private float currentKoreographyEventValue;
 
     /// <summary>
     /// 获取一个数组中的任意一个
@@ -48,17 +50,29 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     /// <returns></returns>
     public byte GetRandomResult()
     {
-        return GameConstant.BlockResults[random.Next(GameConstant.BlockResults.Length)];
+        var intValue = (int)Mathf.Ceil(currentKoreographyEventValue);
+        var minValue = intValue - 1 < 0 ? 0 : intValue - 1;
+        var maxValue = intValue + 1 >= GameConstant.BlockResults.Length ? GameConstant.BlockResults.Length : intValue + 1;
+        return GameConstant.BlockResults[random.Next(minValue, maxValue)];
     }
 
     public void OnInitialize()
     {
+        AudioManager.Instance.OnKoreographyEventAction += OnKoreographyEventActionMethod;
         random = new System.Random();
         problemLevel = (ProblemLevel)PlayerPrefs.GetInt("Setting_ProblemLevel", 0);
         IsInitialized = true;
     }
+    
+    private void OnKoreographyEventActionMethod(KoreographyEvent koreographyEvent)
+    {
+        if(!Global.Instance.isGamePlaying) 
+            return;
+        currentKoreographyEventValue = koreographyEvent.GetFloatValue();
+    }
 
     public void OnRelease()
     {
+        AudioManager.Instance.OnKoreographyEventAction -= OnKoreographyEventActionMethod;
     }
 }
