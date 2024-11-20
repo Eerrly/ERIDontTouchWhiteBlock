@@ -64,6 +64,10 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
         IsInitialized = true;
     }
     
+    /// <summary>
+    /// 获取节奏返回值
+    /// </summary>
+    /// <param name="koreographyEvent"></param>
     private void OnKoreographyEventActionMethod(KoreographyEvent koreographyEvent)
     {
         if(!Global.Instance.isGamePlaying) 
