@@ -45,7 +45,7 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     private float currentKoreographyEventValue;
 
     /// <summary>
-    /// 获取一个数组中的任意一个
+    /// 根据节奏值上下加1随机取值，在大致符合节奏的同时避免节奏相同，而出现连续相同的块
     /// </summary>
     /// <returns></returns>
     public byte GetRandomResult()
