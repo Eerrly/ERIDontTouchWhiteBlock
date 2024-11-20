@@ -26,7 +26,6 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
         }
     }
 
-    private AudioClip audioClip;
     private AudioSource audioSource;
     private Koreographer koreographer;
     private SimpleMusicPlayer simpleMusicPlayer;
@@ -35,8 +34,6 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
 
     public void OnInitialize()
     {
-        audioClip = Resources.Load<AudioClip>("Audios/BackgroundMusic");
-        
         koreographer = gameObject.AddComponent<Koreographer>();
         simpleMusicPlayer = gameObject.AddComponent<SimpleMusicPlayer>();
         audioSource = gameObject.GetComponent<AudioSource>();
@@ -47,11 +44,6 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
         koreographer.RegisterForEvents("TestKoreographyTrack", OnKoreographyEvent);
         simpleMusicPlayer.LoadSong(Resources.Load<Koreography>("Audios/BackgroundMusicKoreography"), 0, false);
         simpleMusicPlayer.Play();
-        
-        // audioSource.loop = true;
-        // audioSource.clip = audioClip;
-        // Volume = 1.0f;
-        // audioSource.Play();
 
         IsInitialized = true;
     }
@@ -71,11 +63,11 @@ public class AudioManager : SingletonMono<AudioManager>, IManager
         audioSource?.UnPause();
     }
 
-    public void SetAudio(string audioPath, bool loop)
+    public void SetAudio(string koreographyPath, bool loop)
     {
-        audioClip = Resources.Load<AudioClip>(audioPath);
         audioSource.loop = loop;
-        audioSource.clip = audioClip;
+        var koreography = Resources.Load<Koreography>(koreographyPath);
+        simpleMusicPlayer.LoadSong(koreography, 0, false);
     }
 
     public void PlayAudio()
