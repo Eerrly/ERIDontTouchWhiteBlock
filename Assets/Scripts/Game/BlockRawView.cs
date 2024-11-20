@@ -16,9 +16,19 @@ public class BlockRawView : MonoBehaviour
     public byte result;
 
     /// <summary>
+    /// 当前行按下的索引
+    /// </summary>
+    public int clickIndex;
+
+    /// <summary>
     /// 当前行触发过点击
     /// </summary>
     public bool isTriggerPointDown;
+
+    /// <summary>
+    /// 当前行触发点击抬起
+    /// </summary>
+    public bool isTriggerPointUp;
 
     /// <summary>
     /// 块点击事件
@@ -41,12 +51,14 @@ public class BlockRawView : MonoBehaviour
     public void RefreshBlockList()
     {
         this.isTriggerPointDown = false;
+        this.isTriggerPointUp = false;
         for (int i = 0; i < blockList.Length; i++)
         {
             byte tmpIndex = (byte)i;
 
             blockList[i].OnInitialize(tmpIndex, this);
-            blockList[i].SetImageColor((result == default(byte)) || (result & (1 << (blockList.Length - i - 1))) == 0 ? Color.white : Color.black);
+            var color = result == default(byte) || (result & (1 << (blockList.Length - i - 1))) == 0 ? GameConstant.BlockWhiteColor : GameConstant.BlockBlackColor;
+            blockList[i].InitBlockInfo(color, GameConstant.DefaultSurefireFrameScale);
         }
     }
 

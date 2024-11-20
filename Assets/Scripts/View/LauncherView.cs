@@ -30,11 +30,13 @@ public class LauncherView : View
 
     private void OnGameButtonClicked()
     {
+#if !UNITY_EDITOR
         if (!SDKManager.Instance.IsAntiAddictionSuccess)
         {
             SDKManager.Instance.StartUp(OnAntiAddictionLoginSuccess, OnAntiAddictionLogoutAccount);
             return;
         }
+#endif
         OnAntiAddictionLoginSuccess();
     }
 

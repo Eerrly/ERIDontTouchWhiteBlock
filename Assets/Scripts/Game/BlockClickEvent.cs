@@ -3,4 +3,4 @@
 /// <summary>
 /// 点击块事件
 /// </summary>
-public class BlockClickEvent : UnityEvent<byte, Block> { }
+public class BlockClickEvent : UnityEvent<Block> { }

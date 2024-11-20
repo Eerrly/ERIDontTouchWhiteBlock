@@ -30,6 +30,14 @@ public class GameView : View
     /// 行的单向循环列表
     /// </summary>
     OneLoopList<BlockRawView> oneLoopList;
+    /// <summary>
+    /// 上一次生成的结果
+    /// </summary>
+    private byte lastGeneratedResult;
+    /// <summary>
+    /// 重复生成同一个结果的次数
+    /// </summary>
+    private int RepetitionsNum;
 
     BlockClickEvent blockClickEvent = new BlockClickEvent();
 
@@ -43,6 +51,7 @@ public class GameView : View
     {
         base.OnEnter();
         BlockScrollManager.Instance.scrollSpeed = GameConstant.InitScrollSpeed[(int)BlockScrollManager.Instance.problemLevel];
+        BlockScrollManager.Instance.faultToleranceTime = GameConstant.InitFaultToleranceTime[(int)BlockScrollManager.Instance.problemLevel];
 
         passedBlockCount = 0;
         Global.Instance.isGameover = false;
@@ -84,14 +93,28 @@ public class GameView : View
             nextNode.item.transform.localPosition = viewHead.item.transform.localPosition + Vector3.up * singleBlockHeight;
             if (nextNode.item.result == default(byte) && passedBlockCount > 1)
             {
-                nextNode.item.result = BlockScrollManager.Instance.GetRandomResult();
+                // 不会出现连续4个一列
+                var result = BlockScrollManager.Instance.GetRandomResult();
+                if (result == lastGeneratedResult)
+                    RepetitionsNum++;
+                else
+                    RepetitionsNum = 0;
+                if (RepetitionsNum > GameConstant.RepetitionsAllowedNum)
+                {
+                    while (result == lastGeneratedResult)
+                        result = BlockScrollManager.Instance.GetRandomResult();
+                    RepetitionsNum = 0;
+                }
+                lastGeneratedResult = result;
+                nextNode.item.result = result;
                 nextNode.item.RefreshBlockList();
             }
         }
         if (viewHead.item.transform.localPosition.y <= rectViewport.height - singleBlockHeight)
         {
+            var item = newLastNode.item;
             // 漏了没点
-            if (newLastNode.item.result != default(byte) && !newLastNode.item.isTriggerPointDown)
+            if (item.result != default(byte) && (!item.isTriggerPointDown || (item.isTriggerPointDown && item.result != GameConstant.BlockResults[item.clickIndex])))
             {
                 ViewManager.Instance.ChangeView((int)EView.GameOver);
                 return;
@@ -136,30 +159,32 @@ public class GameView : View
     /// </summary>
     /// <param name="clickBlockIndex"></param>
     /// <param name="block"></param>
-    void OnBlockClickAction(byte clickBlockIndex, Block block)
+    void OnBlockClickAction(Block block)
     {
         if (Global.Instance.timeScale == 0 || Global.Instance.isGameover)
             return;
-        if (GameConstant.BlockResults[clickBlockIndex] == block.blockRaw.result)
+        if (GameConstant.BlockResults[block.blockRaw.clickIndex] == block.GetBlockViewResult())
         {
             BlockScrollManager.Instance.gameScore++;
-            block.SetImageColor(Color.gray);
+            block.SetBlockInfo(GameConstant.ClickSurefireColor, GameConstant.TweenColorDuration, GameConstant.TweenScaleDuration);
+            return;
         }
         // 点到白的了
-        else
-        {
-            block.SetImageColor(Color.red);
-            MonoManager.Instance.StartCoroutine(CoDoGameOver());
-        }
+        MonoManager.Instance.StartCoroutine(OnClickWhiteBlock(block));
     }
 
     /// <summary>
-    /// 游戏结束
+    /// 点到白块逻辑
     /// </summary>
     /// <returns></returns>
-    private IEnumerator CoDoGameOver()
+    private IEnumerator OnClickWhiteBlock(Block block)
     {
+        yield return new WaitForSeconds(BlockScrollManager.Instance.faultToleranceTime);
+        // 如果在容错时间内抬起，则不算它点到白块
+        if (block.blockRaw.isTriggerPointUp) yield break;
+        // 否则game-over
         Global.Instance.isGameover = true;
+        block.InitBlockInfo(GameConstant.ClickFallaciousColor, GameConstant.DefaultSurefireFrameScale);
         yield return new WaitForSeconds(1.0f);
         ViewManager.Instance.ChangeView((int)EView.GameOver);
     }

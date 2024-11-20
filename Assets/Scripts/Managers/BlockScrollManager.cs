@@ -22,6 +22,10 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     /// </summary>
     [System.NonSerialized] public float scrollSpeed = 0;
     /// <summary>
+    /// 点击白块的容错时间
+    /// </summary>
+    [System.NonSerialized] public float faultToleranceTime = 0;
+    /// <summary>
     /// 游戏总时长时间戳
     /// </summary>
     [System.NonSerialized] public float gameTimeStamp = 0;
@@ -29,11 +33,6 @@ public class BlockScrollManager : SingletonMono<BlockScrollManager>, IManager
     /// 游戏得分
     /// </summary>
     [System.NonSerialized] public int gameScore = 0;
-    /// <summary>
-    /// 是否按钮按下
-    /// </summary>
-    [System.NonSerialized] public bool IsPointerDown = false;
-
     /// <summary>
     /// 难度等级
     /// </summary>
